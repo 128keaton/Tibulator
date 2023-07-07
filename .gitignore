@@ -1,3 +1,4 @@
 node_modules/
 .idea/
 tibulator.json
+.DS_Store
