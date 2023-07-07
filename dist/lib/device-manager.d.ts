@@ -5,8 +5,9 @@ export declare class DeviceManager {
     private readonly rootTopic;
     private readonly globalTick;
     private readonly scanRate;
-    private mainClient;
     private scanClient;
+    private mainClient;
+    private retryCount;
     private ready;
     private stopped;
     private emissionCounts;
@@ -14,9 +15,7 @@ export declare class DeviceManager {
     start(): void;
     stop(): void;
     private tick;
+    private disconnectAll;
     private emitScan;
-    private emitDevice;
-    private emitSensor;
-    private emitInput;
     private shouldEmit;
 }

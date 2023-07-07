@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Parser = void 0;
 const device_1 = require("../device");
+const mqtt_1 = require("mqtt");
 class Parser {
     config;
     serialOffset = 110;
@@ -29,7 +30,11 @@ class Parser {
                 Math.floor(Math.random() * 255) +
                 '.' +
                 Math.floor(Math.random() * 255);
-            const device = new device_1.Device(serialNumber, ipAddress, this.config.firmwareVersion, this.config.firmwareName);
+            const deviceConfig = {};
+            Object.assign(deviceConfig, this.config.mqtt.options);
+            deviceConfig.clientId = serialNumber;
+            const client = (0, mqtt_1.connect)(this.config.mqtt.options.url, deviceConfig);
+            const device = new device_1.Device(serialNumber, ipAddress, this.config.firmwareVersion, this.config.firmwareName, client);
             device.inputs = (this.config.inputs || []).map(this.generateInput);
             device.sensors = (this.config.sensors || []).map(this.generateSensor);
             devices.push(device);

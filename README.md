@@ -4,6 +4,16 @@
 Probably the shittiest package known to man
 
 
+## Changelog
+### 0.0.3
+* Spawns MQTT client for each device
+
+### 0.0.2
+* Increases max device count
+
+### 0.0.1
+* Initial commit
+
 ## Usage
 ```shell
 $ npx tibulator ./tibulator.json

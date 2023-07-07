@@ -7,6 +7,7 @@ import {
   SensorConfig,
   TemperatureSensor,
 } from '../device';
+import { connect, IClientOptions } from 'mqtt';
 
 export class Parser {
   readonly config: Config;
@@ -51,11 +52,18 @@ export class Parser {
         '.' +
         Math.floor(Math.random() * 255);
 
+      const deviceConfig: IClientOptions = {};
+      Object.assign(deviceConfig, this.config.mqtt.options);
+      deviceConfig.clientId = serialNumber;
+
+      const client = connect(this.config.mqtt.options.url, deviceConfig);
+
       const device = new Device(
         serialNumber,
         ipAddress,
         this.config.firmwareVersion,
         this.config.firmwareName,
+        client,
       );
 
       device.inputs = (this.config.inputs || []).map(this.generateInput);

@@ -7,8 +7,9 @@ class DeviceManager {
     rootTopic;
     globalTick;
     scanRate;
-    mainClient;
     scanClient;
+    mainClient;
+    retryCount = 0;
     ready = false;
     stopped = false;
     emissionCounts = {};
@@ -18,10 +19,14 @@ class DeviceManager {
         this.globalTick = globalTick;
         this.scanRate = scanRate;
         const scanClientConfig = {};
+        const mainClientConfig = {};
         Object.assign(scanClientConfig, mqttConfig);
+        Object.assign(mainClientConfig, mqttConfig);
         scanClientConfig.clientId =
-            scanClientConfig.clientId + 'scanClient' || 'scanClient';
-        this.mainClient = (0, mqtt_1.connect)(mqttURL, mqttConfig);
+            scanClientConfig.clientId + '-scanClient' || 'scanClient';
+        mainClientConfig.clientId =
+            mainClientConfig.clientId + '-mainClient' || 'mainClient';
+        this.mainClient = (0, mqtt_1.connect)(mqttURL, mainClientConfig);
         this.scanClient = (0, mqtt_1.connect)(mqttURL, scanClientConfig);
         console.log({ scanRate, globalTick, rootTopic });
         this.mainClient.on('connect', () => {
@@ -35,19 +40,22 @@ class DeviceManager {
             this.scanClient.on('message', (topic) => {
                 if (topic !== scanTopic)
                     return;
-                this.devices.forEach((device) => this.emitDevice(device));
+                this.devices.forEach((device) => device.emitDevice(this.rootTopic));
             });
         });
     }
     start() {
-        if (!this.ready) {
-            setTimeout(() => this.start(), this.globalTick);
-            console.log('MQTT not connected, retrying...');
+        if (!this.ready && this.retryCount < 10) {
+            setTimeout(() => this.start(), this.globalTick + 1000);
+            if (this.retryCount >= 2)
+                console.log('MQTT not connected, retrying...');
             this.stopped = true;
+            this.retryCount += 1;
             return;
         }
         console.log('Starting tick...');
         this.stopped = false;
+        this.retryCount = 0;
         this.tick();
         this.emitScan();
     }
@@ -59,51 +67,44 @@ class DeviceManager {
         console.log('Tick');
         this.devices.forEach((device) => {
             device.sensors.forEach((sensor) => {
-                if (this.shouldEmit(device, sensor))
-                    this.emitSensor(device, sensor);
+                if (this.shouldEmit(device, sensor.name, sensor.emissionRate))
+                    device.emitSensor(this.rootTopic, sensor);
             });
             device.inputs.forEach((input) => {
-                this.emitInput(device, input);
+                device.emitInput(this.rootTopic, input);
             });
         });
         if (!this.stopped)
             setTimeout(() => this.tick(), this.globalTick);
+        else
+            this.disconnectAll();
+    }
+    disconnectAll() {
+        this.devices.forEach((device) => device.disconnect());
     }
     emitScan() {
         console.log('Emitting scan...');
         this.mainClient.publish(`${this.rootTopic}/management/scan`, ' ');
         if (!this.stopped)
             setTimeout(() => this.emitScan(), this.scanRate);
+        else
+            this.disconnectAll();
     }
-    emitDevice(device) {
-        const topic = `${this.rootTopic}/device/${device.mqttSerial}/`;
-        this.mainClient.publish(topic + 'ip-address', device.ipAddress);
-        this.mainClient.publish(topic + 'firmware-version', device.firmwareVersion);
-        this.mainClient.publish(topic + 'firmware-version', device.firmwareName);
-    }
-    emitSensor(device, sensor) {
-        const topic = `${this.rootTopic}/device/${device.mqttSerial}/${sensor.name}`;
-        this.mainClient.publish(topic, sensor.getValue());
-    }
-    emitInput(device, input) {
-        const topic = `${this.rootTopic}/device/${device.mqttSerial}/${input.name}`;
-        this.mainClient.publish(topic, input.getValue() ? 'true' : 'false');
-    }
-    shouldEmit(device, sensor) {
+    shouldEmit(device, sensorName, emissionRate) {
         if (this.emissionCounts.hasOwnProperty(device.serialNumber)) {
-            if (this.emissionCounts.hasOwnProperty(sensor.name)) {
-                const emissionCount = this.emissionCounts[device.serialNumber][sensor.name];
-                if (emissionCount + 1000 > sensor.emissionRate) {
-                    this.emissionCounts[device.serialNumber][sensor.name] = 0;
+            if (this.emissionCounts.hasOwnProperty(sensorName)) {
+                const emissionCount = this.emissionCounts[device.serialNumber][sensorName];
+                if (emissionCount + 1000 > emissionRate) {
+                    this.emissionCounts[device.serialNumber][sensorName] = 0;
                     return true;
                 }
-                this.emissionCounts[device.serialNumber][sensor.name] += 1000;
+                this.emissionCounts[device.serialNumber][sensorName] += 1000;
                 return false;
             }
-            this.emissionCounts[device.serialNumber][sensor.name] = 1000;
+            this.emissionCounts[device.serialNumber][sensorName] = 1000;
             return true;
         }
-        this.emissionCounts[device.serialNumber] = { [sensor.name]: 1000 };
+        this.emissionCounts[device.serialNumber] = { [sensorName]: 1000 };
         return true;
     }
 }
