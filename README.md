@@ -1,6 +1,8 @@
 # Tibulator
 [![](https://img.shields.io/badge/tibulator-npm-red)](https://www.npmjs.com/package/tibulator)
 
+![cli](img/cli.png)
+
 Probably the shittiest package known to man
 
 
