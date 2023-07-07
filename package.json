@@ -1,11 +1,10 @@
 {
   "name": "tibulator",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "CLI utility to emulate a fleet of Tibbo devices sending data over MQTT",
   "main": "dist/tibulator.js",
   "types": "dist/tibulator.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm -rf dist && mkdir dist",
     "build": "npm run clean && tsc && chmod +x dist/tibulator.js"
   },
@@ -24,6 +23,7 @@
   "homepage": "https://github.com/128keaton/tibulator#readme",
   "devDependencies": {
     "@tsconfig/node18": "^18.2.0",
+    "@types/blessed": "^0.1.22",
     "@types/node": "^20.3.2",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
@@ -32,13 +32,14 @@
     "eslint-plugin-prettier": "^4.0.0",
     "ip": "^1.1.8",
     "prettier": "^2.3.2",
-    "xml2js": "0.6.0",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.1.6",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "xml2js": "0.6.0"
   },
   "dependencies": {
+    "blessed": "^0.1.81",
     "commander": "^11.0.0",
     "mqtt": "^4.3.7"
   }

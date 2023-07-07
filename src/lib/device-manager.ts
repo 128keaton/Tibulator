@@ -12,6 +12,21 @@ export class DeviceManager {
 
   private emissionCounts: { [key: string]: { [key: string]: number } } = {};
 
+  onScan = () => {
+    return;
+  };
+
+  onTick = () => {
+    return;
+  };
+  onError = (err: string) => {
+    console.error(err);
+  };
+  onConnect = (host: string) => {
+    console.log(`Connected to ${host}`);
+    return;
+  };
+
   constructor(
     private readonly devices: Device[],
     mqttConfig: IClientOptions,
@@ -35,17 +50,15 @@ export class DeviceManager {
     this.mainClient = connect(mqttURL, mainClientConfig);
     this.scanClient = connect(mqttURL, scanClientConfig);
 
-    console.log({ scanRate, globalTick, rootTopic });
-
     this.mainClient.on('connect', () => {
-      console.log('MQTT connected!');
+      this.onConnect(mqttURL);
       this.ready = true;
     });
 
     const scanTopic = `${this.rootTopic}/management/scan`;
 
     this.scanClient.subscribe(scanTopic, (err, granted) => {
-      if (!granted) console.log(err);
+      if (!granted) this.onError(err.message);
 
       this.scanClient.on('message', (topic) => {
         if (topic !== scanTopic) return;
@@ -58,14 +71,13 @@ export class DeviceManager {
   public start() {
     if (!this.ready && this.retryCount < 10) {
       setTimeout(() => this.start(), this.globalTick + 1000);
-      if (this.retryCount >= 2) console.log('MQTT not connected, retrying...');
+      if (this.retryCount >= 2) this.onError('MQTT not connected, retrying...');
 
       this.stopped = true;
       this.retryCount += 1;
       return;
     }
 
-    console.log('Starting tick...');
     this.stopped = false;
     this.retryCount = 0;
     this.tick();
@@ -73,7 +85,7 @@ export class DeviceManager {
   }
 
   private tick() {
-    console.log('Tick');
+    this.onTick();
     this.devices.forEach((device) => {
       if (device.type === 'TIBBO') {
         const tibbo: Tibbo = device as Tibbo;
@@ -98,7 +110,7 @@ export class DeviceManager {
   }
 
   private emitScan() {
-    console.log('Emitting scan...');
+    this.onScan();
     this.mainClient.publish(`${this.rootTopic}/management/scan`, ' ');
     if (!this.stopped) setTimeout(() => this.emitScan(), this.scanRate);
     else this.disconnectAll();

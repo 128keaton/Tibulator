@@ -5,6 +5,9 @@ Probably the shittiest package known to man
 
 
 ## Changelog
+### 0.0.6
+* New TUI
+
 ### 0.0.5
 * Added Camera device
 * Fixed emissionRate bug

@@ -11,6 +11,10 @@ export declare class DeviceManager {
     private ready;
     private stopped;
     private emissionCounts;
+    onScan: () => void;
+    onTick: () => void;
+    onError: (err: string) => void;
+    onConnect: (host: string) => void;
     constructor(devices: Device[], mqttConfig: IClientOptions, mqttURL: string, rootTopic: string, globalTick?: number, scanRate?: number);
     start(): void;
     private tick;

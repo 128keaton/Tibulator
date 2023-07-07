@@ -1,7 +1,6 @@
 const dgram = require('dgram');
 const ip = require('ip');
 const xml2js = require('xml2js');
-const util = require('util');
 const { v4: uuidv4 } = require('uuid');
 
 const badKeys = ['$'];

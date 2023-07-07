@@ -13,6 +13,19 @@ class DeviceManager {
     ready = false;
     stopped = false;
     emissionCounts = {};
+    onScan = () => {
+        return;
+    };
+    onTick = () => {
+        return;
+    };
+    onError = (err) => {
+        console.error(err);
+    };
+    onConnect = (host) => {
+        console.log(`Connected to ${host}`);
+        return;
+    };
     constructor(devices, mqttConfig, mqttURL, rootTopic, globalTick = 1000, scanRate = 5000) {
         this.devices = devices;
         this.rootTopic = rootTopic;
@@ -28,15 +41,14 @@ class DeviceManager {
             mainClientConfig.clientId + '-mainClient' || 'mainClient';
         this.mainClient = (0, mqtt_1.connect)(mqttURL, mainClientConfig);
         this.scanClient = (0, mqtt_1.connect)(mqttURL, scanClientConfig);
-        console.log({ scanRate, globalTick, rootTopic });
         this.mainClient.on('connect', () => {
-            console.log('MQTT connected!');
+            this.onConnect(mqttURL);
             this.ready = true;
         });
         const scanTopic = `${this.rootTopic}/management/scan`;
         this.scanClient.subscribe(scanTopic, (err, granted) => {
             if (!granted)
-                console.log(err);
+                this.onError(err.message);
             this.scanClient.on('message', (topic) => {
                 if (topic !== scanTopic)
                     return;
@@ -48,19 +60,18 @@ class DeviceManager {
         if (!this.ready && this.retryCount < 10) {
             setTimeout(() => this.start(), this.globalTick + 1000);
             if (this.retryCount >= 2)
-                console.log('MQTT not connected, retrying...');
+                this.onError('MQTT not connected, retrying...');
             this.stopped = true;
             this.retryCount += 1;
             return;
         }
-        console.log('Starting tick...');
         this.stopped = false;
         this.retryCount = 0;
         this.tick();
         this.emitScan();
     }
     tick() {
-        console.log('Tick');
+        this.onTick();
         this.devices.forEach((device) => {
             if (device.type === 'TIBBO') {
                 const tibbo = device;
@@ -82,7 +93,7 @@ class DeviceManager {
         this.devices.forEach((device) => device.disconnect());
     }
     emitScan() {
-        console.log('Emitting scan...');
+        this.onScan();
         this.mainClient.publish(`${this.rootTopic}/management/scan`, ' ');
         if (!this.stopped)
             setTimeout(() => this.emitScan(), this.scanRate);
