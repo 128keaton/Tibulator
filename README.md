@@ -7,6 +7,9 @@ Probably the shittiest package known to man
 
 
 ## Changelog
+### 0.0.8
+* Emits scan date
+
 ### 0.0.7
 * Adds click to scan in TUI
 

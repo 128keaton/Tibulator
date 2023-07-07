@@ -86,7 +86,10 @@ export class DeviceManager {
 
   public emitScan() {
     this.onScan();
-    this.mainClient.publish(`${this.rootTopic}/management/scan`, ' ');
+    this.mainClient.publish(
+      `${this.rootTopic}/management/scan`,
+      `${Date.now()}`,
+    );
     if (!this.stopped) setTimeout(() => this.emitScan(), this.scanRate);
     else this.disconnectAll();
   }
