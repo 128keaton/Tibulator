@@ -5,6 +5,9 @@ Probably the shittiest package known to man
 
 
 ## Changelog
+### 0.0.7
+* Adds click to scan in TUI
+
 ### 0.0.6
 * New TUI
 

@@ -84,6 +84,13 @@ export class DeviceManager {
     this.emitScan();
   }
 
+  public emitScan() {
+    this.onScan();
+    this.mainClient.publish(`${this.rootTopic}/management/scan`, ' ');
+    if (!this.stopped) setTimeout(() => this.emitScan(), this.scanRate);
+    else this.disconnectAll();
+  }
+
   private tick() {
     this.onTick();
     this.devices.forEach((device) => {
@@ -107,13 +114,6 @@ export class DeviceManager {
 
   private disconnectAll() {
     this.devices.forEach((device) => device.disconnect());
-  }
-
-  private emitScan() {
-    this.onScan();
-    this.mainClient.publish(`${this.rootTopic}/management/scan`, ' ');
-    if (!this.stopped) setTimeout(() => this.emitScan(), this.scanRate);
-    else this.disconnectAll();
   }
 
   private shouldEmit(

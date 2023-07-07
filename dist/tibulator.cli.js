@@ -192,6 +192,9 @@ const runCLI = () => {
         screen.key(['escape', 'q', 'C-c'], () => {
             return process.exit(0);
         });
+        scanBox.on('click', () => {
+            deviceManager.emitScan();
+        });
         deviceManager.onTick = () => {
             tickBox.setLine(1, `{center}Last tick: ${Date.now()} {/center}`);
             screen.render();

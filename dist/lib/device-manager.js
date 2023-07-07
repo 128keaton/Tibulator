@@ -70,6 +70,14 @@ class DeviceManager {
         this.tick();
         this.emitScan();
     }
+    emitScan() {
+        this.onScan();
+        this.mainClient.publish(`${this.rootTopic}/management/scan`, ' ');
+        if (!this.stopped)
+            setTimeout(() => this.emitScan(), this.scanRate);
+        else
+            this.disconnectAll();
+    }
     tick() {
         this.onTick();
         this.devices.forEach((device) => {
@@ -91,14 +99,6 @@ class DeviceManager {
     }
     disconnectAll() {
         this.devices.forEach((device) => device.disconnect());
-    }
-    emitScan() {
-        this.onScan();
-        this.mainClient.publish(`${this.rootTopic}/management/scan`, ' ');
-        if (!this.stopped)
-            setTimeout(() => this.emitScan(), this.scanRate);
-        else
-            this.disconnectAll();
     }
     shouldEmit(device, sensorName, emissionRate) {
         if (this.emissionCounts.hasOwnProperty(device.serialNumber)) {
