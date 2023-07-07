@@ -4,16 +4,23 @@ exports.Parser = void 0;
 const device_1 = require("../device");
 class Parser {
     config;
+    serialOffset = 110;
     constructor(rawConfig) {
         if (!rawConfig.length)
             throw new Error('Invalid string');
         this.config = JSON.parse(rawConfig);
     }
     generateDevices() {
+        if (this.config.deviceCount > 2999)
+            throw new Error("Don't even think about it (too many devices)");
         const devices = [];
-        const startingSerial = '0.36.119.87.110.';
+        const startingSerial = `0.36.119.87.${this.serialOffset}`;
         for (let deviceIndex = 0; deviceIndex < this.config.deviceCount; deviceIndex++) {
-            const serialNumber = `${startingSerial}${String(deviceIndex).padStart(3, '0')}`;
+            if (deviceIndex > 999 && this.serialOffset === 110)
+                this.serialOffset = 111;
+            else if (deviceIndex > 1999 && this.serialOffset === 111)
+                this.serialOffset = 112;
+            const serialNumber = `${startingSerial}.${String(deviceIndex).padStart(3, '0')}`;
             const ipAddress = Math.floor(Math.random() * 255) +
                 1 +
                 '.' +
