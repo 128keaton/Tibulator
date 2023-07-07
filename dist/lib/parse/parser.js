@@ -42,7 +42,7 @@ class Parser {
         return devices;
     }
     generateInput(config) {
-        return new device_1.Input(config.name, config.probability);
+        return new device_1.Input(config.name, config.probability, config.trueValue, config.falseValue);
     }
     generateSensor(config) {
         switch (config.type) {

@@ -5,6 +5,9 @@ Probably the shittiest package known to man
 
 
 ## Changelog
+### 0.0.4
+* Mapping of Input values
+
 ### 0.0.3
 * Spawns MQTT client for each device
 
@@ -39,7 +42,19 @@ Example of `tibulator.json`
   "inputs": [
     {
       "name": "motion",
-      "probability": "never"
+      "probability": 0.5
+    },
+    {
+      "name": "door",
+      "probability": 0.1,
+      "trueValue": "open",
+      "falseValue": "closed"
+    },
+    {
+      "name": "alarm",
+      "probability": "never",
+      "trueValue": "yes",
+      "falseValue": "no"
     }
   ],
   "mqtt": {

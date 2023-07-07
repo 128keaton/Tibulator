@@ -76,7 +76,12 @@ export class Parser {
   }
 
   generateInput(config: InputConfig) {
-    return new Input(config.name, config.probability);
+    return new Input(
+      config.name,
+      config.probability,
+      config.trueValue,
+      config.falseValue,
+    );
   }
 
   generateSensor(config: SensorConfig) {

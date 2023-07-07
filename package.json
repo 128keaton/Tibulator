@@ -1,6 +1,6 @@
 {
   "name": "tibulator",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "CLI utility to emulate a fleet of Tibbo devices sending data over MQTT",
   "main": "dist/tibulator.js",
   "types": "dist/tibulator.d.ts",

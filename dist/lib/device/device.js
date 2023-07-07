@@ -27,7 +27,7 @@ class Device {
     }
     emitInput(rootTopic, input) {
         const topic = `${rootTopic}/device/${this.mqttSerial}/${input.name}`;
-        this.mqttClient.publish(topic, input.getValue() ? 'true' : 'false');
+        this.mqttClient.publish(topic, `${input.getValue()}`);
     }
     emitSensor(rootTopic, sensor) {
         const topic = `${rootTopic}/device/${this.mqttSerial}/${sensor.name}`;

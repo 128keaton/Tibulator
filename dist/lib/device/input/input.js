@@ -4,14 +4,19 @@ exports.Input = void 0;
 class Input {
     name;
     probability;
-    constructor(name, probability = 0.5) {
+    trueValue;
+    falseValue;
+    constructor(name, probability = 0.5, trueValue = true, falseValue = false) {
         this.name = name;
         this.probability = probability;
+        this.trueValue = trueValue;
+        this.falseValue = falseValue;
     }
     getValue() {
         if (this.probability === 'never')
-            return false;
-        return (Math.random() < this.probability);
+            return this.falseValue;
+        const value = (Math.random() < this.probability);
+        return value ? this.trueValue : this.falseValue;
     }
 }
 exports.Input = Input;
