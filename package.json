@@ -1,0 +1,46 @@
+{
+  "name": "tibulator",
+  "version": "0.0.1",
+  "description": "CLI utility to emulate a fleet of Tibbo devices sending data over MQTT",
+  "main": "dist/tibulator.js",
+  "types": "dist/tibulator.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf dist && mkdir dist",
+    "build": "npm run clean && tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/128keaton/tibulator.git"
+  },
+  "keywords": [
+    "tibbo",
+    "tibbotech"
+  ],
+  "author": "Keaton Burleson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/128keaton/tibulator/issues"
+  },
+  "bin": {
+    "tibulator": "./dist/tibulator.js"
+  },
+  "homepage": "https://github.com/128keaton/tibulator#readme",
+  "devDependencies": {
+    "@tsconfig/node18": "^18.2.0",
+    "@types/node": "^20.3.2",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.3.2",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "commander": "^11.0.0",
+    "mqtt": "^4.3.7"
+  }
+}
