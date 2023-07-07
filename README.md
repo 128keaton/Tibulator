@@ -54,4 +54,5 @@ Example of `tibulator.json`
 ```
 
 ## Example
-![Output](output.png)
+![Output](img/output.png)
+![RabbitMQ](img/rabbitmq.png)
