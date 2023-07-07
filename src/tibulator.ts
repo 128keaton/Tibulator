@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 import { DeviceManager } from './lib/device-manager';
 import { program } from 'commander';
 import { Parser } from './lib/parse/parser';

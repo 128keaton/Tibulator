@@ -32,13 +32,11 @@ class DeviceManager {
         this.scanClient.subscribe(scanTopic, (err, granted) => {
             if (!granted)
                 console.log(err);
-            if (granted)
-                console.log('granted');
-        });
-        this.scanClient.on('message', (topic) => {
-            if (topic !== scanTopic)
-                return;
-            this.devices.forEach((device) => this.emitDevice(device));
+            this.scanClient.on('message', (topic) => {
+                if (topic !== scanTopic)
+                    return;
+                this.devices.forEach((device) => this.emitDevice(device));
+            });
         });
     }
     start() {
