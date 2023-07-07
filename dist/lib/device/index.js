@@ -18,3 +18,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./input"), exports);
 __exportStar(require("./sensor"), exports);
 __exportStar(require("./device"), exports);
+__exportStar(require("./camera"), exports);
+__exportStar(require("./device"), exports);

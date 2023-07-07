@@ -5,6 +5,11 @@ Probably the shittiest package known to man
 
 
 ## Changelog
+### 0.0.5
+* Added Camera device
+* Fixed emissionRate bug
+* Adds ws-discover util
+
 ### 0.0.4
 * Mapping of Input values
 
@@ -27,16 +32,18 @@ $ npx tibulator ./tibulator.json
 Example of `tibulator.json`
 ```json
 {
-  "deviceCount": 10,
+  "tibboCount": 5,
+  "cameraCount": 5,
   "firmwareVersion": "1.0",
   "firmwareName": "Test",
-  "scanRate": 10000,
+  "scanRate": 50000,
   "sensors": [
     {
       "type": "HUMIDITY"
     },
     {
-      "type": "TEMPERATURE"
+      "type": "TEMPERATURE",
+      "emissionRate": 10000
     }
   ],
   "inputs": [

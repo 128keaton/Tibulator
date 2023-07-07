@@ -2,3 +2,4 @@
 .eslintrc.js
 img/output.png
 src/
+util/

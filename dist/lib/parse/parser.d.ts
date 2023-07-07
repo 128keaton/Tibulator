@@ -1,5 +1,6 @@
 import { Config } from './config';
-import { Device, HumiditySensor, Input, InputConfig, SensorConfig, TemperatureSensor } from '../device';
+import { Camera, Device, HumiditySensor, Input, InputConfig, SensorConfig, TemperatureSensor } from '../device';
+import { Tibbo } from '../device/tibbo';
 export declare class Parser {
     readonly config: Config;
     private serialOffset;
@@ -7,4 +8,8 @@ export declare class Parser {
     generateDevices(): Device[];
     generateInput(config: InputConfig): Input;
     generateSensor(config: SensorConfig): HumiditySensor | TemperatureSensor;
+    generateTibbo(serialNumber: string): Tibbo;
+    generateCamera(): Camera;
+    generateMAC(): string;
+    generateIP(): string;
 }

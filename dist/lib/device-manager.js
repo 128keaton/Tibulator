@@ -59,20 +59,19 @@ class DeviceManager {
         this.tick();
         this.emitScan();
     }
-    stop() {
-        console.log('Stopping tick...');
-        this.stopped = true;
-    }
     tick() {
         console.log('Tick');
         this.devices.forEach((device) => {
-            device.sensors.forEach((sensor) => {
-                if (this.shouldEmit(device, sensor.name, sensor.emissionRate))
-                    device.emitSensor(this.rootTopic, sensor);
-            });
-            device.inputs.forEach((input) => {
-                device.emitInput(this.rootTopic, input);
-            });
+            if (device.type === 'TIBBO') {
+                const tibbo = device;
+                tibbo.sensors.forEach((sensor) => {
+                    if (this.shouldEmit(device, sensor.name, sensor.emissionRate))
+                        tibbo.emitSensor(this.rootTopic, sensor);
+                });
+                tibbo.inputs.forEach((input) => {
+                    tibbo.emitInput(this.rootTopic, input);
+                });
+            }
         });
         if (!this.stopped)
             setTimeout(() => this.tick(), this.globalTick);
@@ -92,7 +91,7 @@ class DeviceManager {
     }
     shouldEmit(device, sensorName, emissionRate) {
         if (this.emissionCounts.hasOwnProperty(device.serialNumber)) {
-            if (this.emissionCounts.hasOwnProperty(sensorName)) {
+            if (this.emissionCounts[device.serialNumber].hasOwnProperty(sensorName)) {
                 const emissionCount = this.emissionCounts[device.serialNumber][sensorName];
                 if (emissionCount + 1000 > emissionRate) {
                     this.emissionCounts[device.serialNumber][sensorName] = 0;

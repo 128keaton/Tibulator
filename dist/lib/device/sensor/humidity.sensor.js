@@ -14,7 +14,8 @@ class HumiditySensor {
         this.emissionRate = emissionRate;
     }
     getValue() {
-        return `${Math.random() * (this.rangeHigh - this.rangeLow + 1) + this.rangeLow}`;
+        return `${(Math.random() * (this.rangeHigh - this.rangeLow + 1) +
+            this.rangeLow).toFixed(1)}`;
     }
 }
 exports.HumiditySensor = HumiditySensor;

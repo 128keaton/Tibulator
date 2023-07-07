@@ -13,7 +13,6 @@ export declare class DeviceManager {
     private emissionCounts;
     constructor(devices: Device[], mqttConfig: IClientOptions, mqttURL: string, rootTopic: string, globalTick?: number, scanRate?: number);
     start(): void;
-    stop(): void;
     private tick;
     private disconnectAll;
     private emitScan;

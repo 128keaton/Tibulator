@@ -11,8 +11,9 @@ export class HumiditySensor implements Sensor {
   ) {}
 
   getValue(): string {
-    return `${
-      Math.random() * (this.rangeHigh - this.rangeLow + 1) + this.rangeLow
-    }`;
+    return `${(
+      Math.random() * (this.rangeHigh - this.rangeLow + 1) +
+      this.rangeLow
+    ).toFixed(1)}`;
   }
 }

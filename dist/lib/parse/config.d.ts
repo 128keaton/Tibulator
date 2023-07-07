@@ -1,7 +1,8 @@
 import { IClientOptions } from 'mqtt';
 import { InputConfig, SensorConfig } from '../device';
 export interface Config {
-    deviceCount: number;
+    tibboCount: number;
+    cameraCount?: number;
     sensors?: SensorConfig[];
     inputs?: InputConfig[];
     firmwareVersion: string;

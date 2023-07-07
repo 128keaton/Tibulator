@@ -1,5 +1,6 @@
 import { Client, IClientOptions, connect } from 'mqtt';
 import { Device } from './device';
+import { Tibbo } from './device/tibbo';
 
 export class DeviceManager {
   private scanClient: Client;
@@ -71,22 +72,21 @@ export class DeviceManager {
     this.emitScan();
   }
 
-  public stop() {
-    console.log('Stopping tick...');
-    this.stopped = true;
-  }
-
   private tick() {
     console.log('Tick');
     this.devices.forEach((device) => {
-      device.sensors.forEach((sensor) => {
-        if (this.shouldEmit(device, sensor.name, sensor.emissionRate))
-          device.emitSensor(this.rootTopic, sensor);
-      });
+      if (device.type === 'TIBBO') {
+        const tibbo: Tibbo = device as Tibbo;
 
-      device.inputs.forEach((input) => {
-        device.emitInput(this.rootTopic, input);
-      });
+        tibbo.sensors.forEach((sensor) => {
+          if (this.shouldEmit(device, sensor.name, sensor.emissionRate))
+            tibbo.emitSensor(this.rootTopic, sensor);
+        });
+
+        tibbo.inputs.forEach((input) => {
+          tibbo.emitInput(this.rootTopic, input);
+        });
+      }
     });
 
     if (!this.stopped) setTimeout(() => this.tick(), this.globalTick);
@@ -110,7 +110,7 @@ export class DeviceManager {
     emissionRate: number,
   ): boolean {
     if (this.emissionCounts.hasOwnProperty(device.serialNumber)) {
-      if (this.emissionCounts.hasOwnProperty(sensorName)) {
+      if (this.emissionCounts[device.serialNumber].hasOwnProperty(sensorName)) {
         const emissionCount =
           this.emissionCounts[device.serialNumber][sensorName];
 
@@ -121,6 +121,7 @@ export class DeviceManager {
         this.emissionCounts[device.serialNumber][sensorName] += 1000;
         return false;
       }
+
       this.emissionCounts[device.serialNumber][sensorName] = 1000;
       return true;
     }
