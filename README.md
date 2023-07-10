@@ -7,6 +7,9 @@ Probably the shittiest package known to man
 
 
 ## Changelog
+### 0.1.0
+* `Input` is now `RandomInput` or `ArrayInput` depending on how you've configured the input (see example)
+
 ### 0.0.9
 * Improves example box on the right
 * Adds options for `cameraTopic`, `deviceTopic`, and `managementTopic`
@@ -71,9 +74,7 @@ Example of `tibulator.json`
     },
     {
       "name": "door",
-      "probability": 0.1,
-      "trueValue": "open",
-      "falseValue": "closed"
+      "values": ["opening", "closing", "open", "closed"]
     },
     {
       "name": "alarm",

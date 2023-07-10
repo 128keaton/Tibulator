@@ -1,10 +1,11 @@
 import { Config } from './config';
 import {
+  ArrayInput,
   Camera,
   Device,
   HumiditySensor,
-  Input,
   InputConfig,
+  RandomInput,
   SensorConfig,
   TemperatureSensor,
 } from '../device';
@@ -59,13 +60,24 @@ export class Parser {
     return devices;
   }
 
-  generateInput(config: InputConfig) {
-    return new Input(
+  generateRandomInput(config: InputConfig) {
+    return new RandomInput(
       config.name,
       config.probability,
       config.trueValue,
       config.falseValue,
     );
+  }
+
+  generateArrayInput(config: InputConfig) {
+    return new ArrayInput(config.name, config.values || []);
+  }
+
+  generateInput(config: InputConfig) {
+    if (config.values) {
+      return this.generateArrayInput(config);
+    }
+    return this.generateRandomInput(config);
   }
 
   generateSensor(config: SensorConfig) {
@@ -103,7 +115,10 @@ export class Parser {
       client,
     );
 
-    tibbo.inputs = (this.config.inputs || []).map(this.generateInput);
+    tibbo.inputs = (this.config.inputs || []).map((input) => {
+      return this.generateInput(input);
+    });
+
     tibbo.sensors = (this.config.sensors || []).map(this.generateSensor);
 
     return tibbo;

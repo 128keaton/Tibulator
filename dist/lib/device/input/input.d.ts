@@ -1,8 +1,6 @@
-export declare class Input {
+export type InputType = 'RANDOM' | 'ARRAY';
+export interface Input {
     readonly name: string;
-    private readonly probability;
-    private readonly trueValue;
-    private readonly falseValue;
-    constructor(name: string, probability?: number | 'never', trueValue?: boolean, falseValue?: boolean);
+    readonly type: InputType;
     getValue(): any;
 }

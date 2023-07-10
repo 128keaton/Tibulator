@@ -4,7 +4,7 @@ import { runEmulation } from './cli/emulate';
 export const runCLI = () => {
   program
     .name('tibulator')
-    .version('0.0.9')
+    .version('0.1.0')
     .description('Emulate a fleet of Tibbo devices over MQTT');
 
   const emulateCommand = program

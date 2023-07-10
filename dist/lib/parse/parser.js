@@ -30,8 +30,17 @@ class Parser {
         }
         return devices;
     }
+    generateRandomInput(config) {
+        return new device_1.RandomInput(config.name, config.probability, config.trueValue, config.falseValue);
+    }
+    generateArrayInput(config) {
+        return new device_1.ArrayInput(config.name, config.values || []);
+    }
     generateInput(config) {
-        return new device_1.Input(config.name, config.probability, config.trueValue, config.falseValue);
+        if (config.values) {
+            return this.generateArrayInput(config);
+        }
+        return this.generateRandomInput(config);
     }
     generateSensor(config) {
         switch (config.type) {
@@ -47,7 +56,9 @@ class Parser {
         tibboConfig.clientId = serialNumber;
         const client = (0, mqtt_1.connect)(this.config.mqtt.options.url, tibboConfig);
         const tibbo = new tibbo_1.Tibbo(serialNumber, this.generateIP(), this.config.firmwareVersion, this.config.firmwareName, this.config.tibboTopic, client);
-        tibbo.inputs = (this.config.inputs || []).map(this.generateInput);
+        tibbo.inputs = (this.config.inputs || []).map((input) => {
+            return this.generateInput(input);
+        });
         tibbo.sensors = (this.config.sensors || []).map(this.generateSensor);
         return tibbo;
     }

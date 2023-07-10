@@ -17,3 +17,5 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./input.config"), exports);
 __exportStar(require("./input"), exports);
+__exportStar(require("./array.input"), exports);
+__exportStar(require("./random.input"), exports);
