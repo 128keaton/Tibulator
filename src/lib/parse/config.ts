@@ -3,7 +3,10 @@ import { InputConfig, SensorConfig } from '../device';
 
 export interface Config {
   tibboCount: number;
+  tibboTopic?: string;
   cameraCount?: number;
+  cameraTopic?: string;
+  managementTopic?: string;
   sensors?: SensorConfig[];
   inputs?: InputConfig[];
   firmwareVersion: string;

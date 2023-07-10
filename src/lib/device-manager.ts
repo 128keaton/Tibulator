@@ -34,6 +34,7 @@ export class DeviceManager {
     private readonly rootTopic: string,
     private readonly globalTick: number = 1000,
     private readonly scanRate: number = 5000,
+    private readonly managementTopic = 'management',
   ) {
     const scanClientConfig: IClientOptions = {};
     const mainClientConfig: IClientOptions = {};
@@ -55,7 +56,7 @@ export class DeviceManager {
       this.ready = true;
     });
 
-    const scanTopic = `${this.rootTopic}/management/scan`;
+    const scanTopic = `${this.rootTopic}/${this.managementTopic}/scan`;
 
     this.scanClient.subscribe(scanTopic, (err, granted) => {
       if (!granted) this.onError(err.message);
@@ -87,7 +88,7 @@ export class DeviceManager {
   public emitScan() {
     this.onScan();
     this.mainClient.publish(
-      `${this.rootTopic}/management/scan`,
+      `${this.rootTopic}/${this.managementTopic}/scan`,
       `${Date.now()}`,
     );
     if (!this.stopped) setTimeout(() => this.emitScan(), this.scanRate);

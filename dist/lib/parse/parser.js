@@ -46,7 +46,7 @@ class Parser {
         Object.assign(tibboConfig, this.config.mqtt.options);
         tibboConfig.clientId = serialNumber;
         const client = (0, mqtt_1.connect)(this.config.mqtt.options.url, tibboConfig);
-        const tibbo = new tibbo_1.Tibbo(serialNumber, this.generateIP(), this.config.firmwareVersion, this.config.firmwareName, client);
+        const tibbo = new tibbo_1.Tibbo(serialNumber, this.generateIP(), this.config.firmwareVersion, this.config.firmwareName, this.config.tibboTopic, client);
         tibbo.inputs = (this.config.inputs || []).map(this.generateInput);
         tibbo.sensors = (this.config.sensors || []).map(this.generateSensor);
         return tibbo;
@@ -58,7 +58,7 @@ class Parser {
         Object.assign(cameraConfig, this.config.mqtt.options);
         cameraConfig.clientId = serialNumber;
         const client = (0, mqtt_1.connect)(this.config.mqtt.options.url, cameraConfig);
-        return new device_1.Camera(serialNumber, ipAddress, client);
+        return new device_1.Camera(serialNumber, ipAddress, this.config.cameraTopic, client);
     }
     generateMAC() {
         return 'XX:XX:XX:XX:XX:XX'.replace(/X/g, function () {

@@ -7,6 +7,11 @@ Probably the shittiest package known to man
 
 
 ## Changelog
+### 0.0.9
+* Improves example box on the right
+* Adds options for `cameraTopic`, `deviceTopic`, and `managementTopic`
+* Splits up CLI for later improvements
+
 ### 0.0.8
 * Emits scan date
 
@@ -44,7 +49,9 @@ Example of `tibulator.json`
 ```json
 {
   "tibboCount": 5,
+  "tibboTopic": "dev/unit",
   "cameraCount": 5,
+  "cameraTopic": "dev/camera",
   "firmwareVersion": "1.0",
   "firmwareName": "Test",
   "scanRate": 50000,

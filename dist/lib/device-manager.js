@@ -7,6 +7,7 @@ class DeviceManager {
     rootTopic;
     globalTick;
     scanRate;
+    managementTopic;
     scanClient;
     mainClient;
     retryCount = 0;
@@ -26,11 +27,12 @@ class DeviceManager {
         console.log(`Connected to ${host}`);
         return;
     };
-    constructor(devices, mqttConfig, mqttURL, rootTopic, globalTick = 1000, scanRate = 5000) {
+    constructor(devices, mqttConfig, mqttURL, rootTopic, globalTick = 1000, scanRate = 5000, managementTopic = 'management') {
         this.devices = devices;
         this.rootTopic = rootTopic;
         this.globalTick = globalTick;
         this.scanRate = scanRate;
+        this.managementTopic = managementTopic;
         const scanClientConfig = {};
         const mainClientConfig = {};
         Object.assign(scanClientConfig, mqttConfig);
@@ -45,7 +47,7 @@ class DeviceManager {
             this.onConnect(mqttURL);
             this.ready = true;
         });
-        const scanTopic = `${this.rootTopic}/management/scan`;
+        const scanTopic = `${this.rootTopic}/${this.managementTopic}/scan`;
         this.scanClient.subscribe(scanTopic, (err, granted) => {
             if (!granted)
                 this.onError(err.message);
@@ -72,7 +74,7 @@ class DeviceManager {
     }
     emitScan() {
         this.onScan();
-        this.mainClient.publish(`${this.rootTopic}/management/scan`, `${Date.now()}`);
+        this.mainClient.publish(`${this.rootTopic}/${this.managementTopic}/scan`, `${Date.now()}`);
         if (!this.stopped)
             setTimeout(() => this.emitScan(), this.scanRate);
         else

@@ -7,11 +7,12 @@ export declare class Tibbo implements Device {
     readonly ipAddress: string;
     readonly firmwareVersion: string;
     readonly firmwareName: string;
+    readonly topic: string;
     private readonly mqttClient;
     inputs: Input[];
     sensors: Sensor[];
     readonly type = "TIBBO";
-    constructor(serialNumber: string, ipAddress: string, firmwareVersion: string, firmwareName: string, mqttClient: Client);
+    constructor(serialNumber: string, ipAddress: string, firmwareVersion: string, firmwareName: string, topic: string, mqttClient: Client);
     get mqttSerial(): string;
     emitDevice(rootTopic: string): void;
     emitInput(rootTopic: string, input: Input): void;
