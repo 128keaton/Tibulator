@@ -4,9 +4,10 @@ export declare class Camera implements Device {
     readonly serialNumber: string;
     readonly ipAddress: string;
     readonly topic: string;
+    readonly locationID: number;
     private readonly mqttClient;
     readonly type = "CAMERA";
-    constructor(serialNumber: string, ipAddress: string, topic: string, mqttClient: Client);
+    constructor(serialNumber: string, ipAddress: string, topic: string, locationID: number, mqttClient: Client);
     get mqttSerial(): string;
     emitDevice(rootTopic: string): void;
     disconnect(): void;

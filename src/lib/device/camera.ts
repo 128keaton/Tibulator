@@ -8,6 +8,7 @@ export class Camera implements Device {
     readonly serialNumber: string,
     readonly ipAddress: string,
     readonly topic: string = 'device',
+    readonly locationID: number = 1,
     private readonly mqttClient: Client,
   ) {}
 
@@ -16,7 +17,7 @@ export class Camera implements Device {
   }
 
   public emitDevice(rootTopic: string) {
-    const topic = `${rootTopic}/${this.topic}/${this.mqttSerial}/`;
+    const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/`;
 
     this.mqttClient.publish(topic + 'type', this.type);
     this.mqttClient.publish(topic + 'ip-address', this.ipAddress);

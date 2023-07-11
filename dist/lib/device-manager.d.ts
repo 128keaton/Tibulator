@@ -6,6 +6,7 @@ export declare class DeviceManager {
     private readonly globalTick;
     private readonly scanRate;
     private readonly managementTopic;
+    private readonly locationID;
     private scanClient;
     private mainClient;
     private retryCount;
@@ -16,7 +17,7 @@ export declare class DeviceManager {
     onTick: () => void;
     onError: (err: string) => void;
     onConnect: (host: string) => void;
-    constructor(devices: Device[], mqttConfig: IClientOptions, mqttURL: string, rootTopic: string, globalTick?: number, scanRate?: number, managementTopic?: string);
+    constructor(devices: Device[], mqttConfig: IClientOptions, mqttURL: string, rootTopic: string, globalTick?: number, scanRate?: number, managementTopic?: string, locationID?: number);
     start(): void;
     emitScan(): void;
     private tick;

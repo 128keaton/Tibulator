@@ -214,7 +214,7 @@ export const runEmulation = (configPath: string) => {
 
       const stringContent = JSON.stringify(object, null, 2).replace(
         /^{/,
-        `${parser.config.mqtt.rootTopic}/${device.topic}/${device.serialNumber}`,
+        `${parser.config.mqtt.rootTopic}/${device.topic}/${device.locationID}/${device.serialNumber}`,
       );
 
       exampleBox.setContent(stringContent);

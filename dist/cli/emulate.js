@@ -205,7 +205,7 @@ const runEmulation = (configPath) => {
             }
             const object = {};
             object[device.serialNumber] = mockDevice;
-            const stringContent = JSON.stringify(object, null, 2).replace(/^{/, `${parser.config.mqtt.rootTopic}/${device.topic}/${device.serialNumber}`);
+            const stringContent = JSON.stringify(object, null, 2).replace(/^{/, `${parser.config.mqtt.rootTopic}/${device.topic}/${device.locationID}/${device.serialNumber}`);
             exampleBox.setContent(stringContent);
         }
     };

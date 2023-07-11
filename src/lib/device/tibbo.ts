@@ -15,6 +15,7 @@ export class Tibbo implements Device {
     readonly firmwareVersion: string,
     readonly firmwareName: string,
     readonly topic: string = 'device',
+    readonly locationID: number = 1,
     private readonly mqttClient: Client,
   ) {}
 
@@ -23,7 +24,7 @@ export class Tibbo implements Device {
   }
 
   public emitDevice(rootTopic: string) {
-    const topic = `${rootTopic}/${this.topic}/${this.mqttSerial}/`;
+    const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/`;
 
     this.mqttClient.publish(topic + 'type', this.type);
     this.mqttClient.publish(topic + 'ip-address', this.ipAddress);
@@ -32,12 +33,12 @@ export class Tibbo implements Device {
   }
 
   public emitInput(rootTopic: string, input: Input) {
-    const topic = `${rootTopic}/${this.topic}/${this.mqttSerial}/${input.name}`;
+    const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/${input.name}`;
     this.mqttClient.publish(topic, `${input.getValue()}`);
   }
 
   public emitSensor(rootTopic: string, sensor: Sensor) {
-    const topic = `${rootTopic}/${this.topic}/${this.mqttSerial}/${sensor.name}`;
+    const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/${sensor.name}`;
 
     this.mqttClient.publish(topic, sensor.getValue());
   }

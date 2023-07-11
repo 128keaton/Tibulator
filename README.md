@@ -7,6 +7,9 @@ Probably the shittiest package known to man
 
 
 ## Changelog
+### 0.1.1
+* Adds `locationID` to topic/config
+
 ### 0.1.0
 * `Input` is now `RandomInput` or `ArrayInput` depending on how you've configured the input (see example)
 
@@ -51,9 +54,10 @@ $ npx tibulator ./tibulator.json
 Example of `tibulator.json`
 ```json
 {
-  "tibboCount": 5,
+  "locationID": 1,
+  "tibboCount": 0,
   "tibboTopic": "dev/unit",
-  "cameraCount": 5,
+  "cameraCount": 0,
   "cameraTopic": "dev/camera",
   "firmwareVersion": "1.0",
   "firmwareName": "Test",

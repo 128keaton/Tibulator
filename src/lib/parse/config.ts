@@ -6,6 +6,7 @@ export interface Config {
   tibboTopic?: string;
   cameraCount?: number;
   cameraTopic?: string;
+  locationID?: number;
   managementTopic?: string;
   sensors?: SensorConfig[];
   inputs?: InputConfig[];

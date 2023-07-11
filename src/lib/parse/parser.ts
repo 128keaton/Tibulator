@@ -112,6 +112,7 @@ export class Parser {
       this.config.firmwareVersion,
       this.config.firmwareName,
       this.config.tibboTopic,
+      this.config.locationID,
       client,
     );
 
@@ -134,7 +135,13 @@ export class Parser {
 
     const client = connect(this.config.mqtt.options.url, cameraConfig);
 
-    return new Camera(serialNumber, ipAddress, this.config.cameraTopic, client);
+    return new Camera(
+      serialNumber,
+      ipAddress,
+      this.config.cameraTopic,
+      this.config.locationID,
+      client,
+    );
   }
 
   generateMAC() {
