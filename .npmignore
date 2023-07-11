@@ -1,5 +1,7 @@
 .prettierrc
 .eslintrc.js
-img/output.png
 src/
 util/
+tibulator.json
+.idea/
+img/*
