@@ -31,10 +31,10 @@ class Parser {
         return devices;
     }
     generateRandomInput(config) {
-        return new device_1.RandomInput(config.name, config.probability, config.trueValue, config.falseValue);
+        return new device_1.RandomInput(config.name, config.probability, config.trueValue, config.falseValue, config.initialValue || config.trueValue || config.falseValue);
     }
     generateArrayInput(config) {
-        return new device_1.ArrayInput(config.name, config.values || []);
+        return new device_1.ArrayInput(config.name, config.values || [], config.initialValue || (config.values || [])[0]);
     }
     generateInput(config) {
         if (config.values) {

@@ -1,8 +1,10 @@
 import { Input, InputType } from './input';
 export declare class ArrayInput implements Input {
     readonly name: string;
-    private readonly values;
+    readonly values: any[];
+    lastValue?: string;
+    readonly initialValue?: string;
     readonly type: InputType;
-    constructor(name: string, values: any[]);
-    getValue(): any;
+    constructor(name: string, values: any[], initialValue?: string);
+    getValue(): string;
 }

@@ -21,7 +21,7 @@ class Camera {
     emitDevice(rootTopic) {
         const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/`;
         this.mqttClient.publish(topic + 'type', this.type);
-        this.mqttClient.publish(topic + 'ip-address', this.ipAddress);
+        this.mqttClient.publish(topic + 'ipAddress', this.ipAddress);
     }
     disconnect() {
         this.mqttClient.end(true);

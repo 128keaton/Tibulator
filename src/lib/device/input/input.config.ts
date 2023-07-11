@@ -4,4 +4,5 @@ export interface InputConfig {
   trueValue?: never;
   falseValue?: never;
   values?: any[];
+  initialValue?: string;
 }

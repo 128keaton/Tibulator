@@ -66,11 +66,16 @@ export class Parser {
       config.probability,
       config.trueValue,
       config.falseValue,
+      config.initialValue || config.trueValue || config.falseValue,
     );
   }
 
   generateArrayInput(config: InputConfig) {
-    return new ArrayInput(config.name, config.values || []);
+    return new ArrayInput(
+      config.name,
+      config.values || [],
+      config.initialValue || (config.values || [])[0],
+    );
   }
 
   generateInput(config: InputConfig) {

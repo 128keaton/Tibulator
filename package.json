@@ -1,6 +1,6 @@
 {
   "name": "tibulator",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "CLI utility to emulate a fleet of Tibbo devices sending data over MQTT",
   "main": "dist/tibulator.js",
   "types": "dist/tibulator.d.ts",
@@ -39,8 +39,8 @@
     "xml2js": "0.6.0"
   },
   "dependencies": {
-    "blessed": "^0.1.81",
     "commander": "^11.0.0",
-    "mqtt": "^4.3.7"
+    "mqtt": "^4.3.7",
+    "neo-blessed": "^0.2.0"
   }
 }

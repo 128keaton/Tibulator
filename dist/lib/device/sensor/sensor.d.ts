@@ -3,5 +3,6 @@ export interface Sensor {
     name: string;
     emissionRate: number;
     type: SensorType;
+    lastValue?: string;
     getValue(): string;
 }

@@ -27,13 +27,13 @@ class Tibbo {
     emitDevice(rootTopic) {
         const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/`;
         this.mqttClient.publish(topic + 'type', this.type);
-        this.mqttClient.publish(topic + 'ip-address', this.ipAddress);
-        this.mqttClient.publish(topic + 'firmware-version', this.firmwareVersion);
-        this.mqttClient.publish(topic + 'firmware-name', this.firmwareName);
+        this.mqttClient.publish(topic + 'ipAddress', this.ipAddress);
+        this.mqttClient.publish(topic + 'firmwareVersion', this.firmwareVersion);
+        this.mqttClient.publish(topic + 'firmwareName', this.firmwareName);
     }
-    emitInput(rootTopic, input) {
+    emitInput(rootTopic, input, value) {
         const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/${input.name}`;
-        this.mqttClient.publish(topic, `${input.getValue()}`);
+        this.mqttClient.publish(topic, `${value || input.getValue()}`);
     }
     emitSensor(rootTopic, sensor) {
         const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/${sensor.name}`;

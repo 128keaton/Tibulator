@@ -7,6 +7,7 @@ class TemperatureSensor {
     rangeHigh;
     emissionRate;
     type = 'TEMPERATURE';
+    lastValue;
     constructor(name = 'temperature', rangeLow = 23, rangeHigh = 36, emissionRate = 5000) {
         this.name = name;
         this.rangeLow = rangeLow;
@@ -14,8 +15,9 @@ class TemperatureSensor {
         this.emissionRate = emissionRate;
     }
     getValue() {
-        return `${(Math.random() * (this.rangeHigh - this.rangeLow + 1) +
+        this.lastValue = `${(Math.random() * (this.rangeHigh - this.rangeLow + 1) +
             this.rangeLow).toFixed(1)}`;
+        return this.lastValue;
     }
 }
 exports.TemperatureSensor = TemperatureSensor;

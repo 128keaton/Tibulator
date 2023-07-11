@@ -4,13 +4,19 @@ exports.ArrayInput = void 0;
 class ArrayInput {
     name;
     values;
+    lastValue;
+    initialValue;
     type = 'ARRAY';
-    constructor(name, values) {
+    constructor(name, values, initialValue) {
         this.name = name;
         this.values = values;
+        this.initialValue = initialValue;
+        this.lastValue = this.initialValue;
     }
     getValue() {
-        return this.values[Math.floor(Math.random() * this.values.length)];
+        this.lastValue =
+            this.values[Math.floor(Math.random() * this.values.length)];
+        return `${this.lastValue}`;
     }
 }
 exports.ArrayInput = ArrayInput;

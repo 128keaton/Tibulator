@@ -15,7 +15,6 @@ export const runCLI = () => {
       './tibulator.json',
     )
     .action((options: { c?: string; config?: string }) => {
-      console.log(options);
       runEmulation(options.c || options.config || './tibulator.json');
     });
 

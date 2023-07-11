@@ -82,6 +82,16 @@ class DeviceManager {
         else
             this.disconnectAll();
     }
+    emitInput(inputName, value) {
+        this.devices.forEach((device) => {
+            if (device.type === 'TIBBO') {
+                const tibbo = device;
+                const input = tibbo.inputs.find((input) => input.name === inputName);
+                if (!!input)
+                    tibbo.emitInput(this.rootTopic, input, value);
+            }
+        });
+    }
     tick() {
         this.onTick();
         this.devices.forEach((device) => {
@@ -90,9 +100,6 @@ class DeviceManager {
                 tibbo.sensors.forEach((sensor) => {
                     if (this.shouldEmit(device, sensor.name, sensor.emissionRate))
                         tibbo.emitSensor(this.rootTopic, sensor);
-                });
-                tibbo.inputs.forEach((input) => {
-                    tibbo.emitInput(this.rootTopic, input);
                 });
             }
         });

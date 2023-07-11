@@ -1,10 +1,11 @@
-import * as blessed from 'blessed';
+import * as blessed from 'neo-blessed';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Parser } from '../lib/parse/parser';
 import { Tibbo } from '../lib/device/tibbo';
-import { Device } from '../lib/device';
+import { ArrayInput, Device, RandomInput } from '../lib/device';
 import { DeviceManager } from '../lib/device-manager';
+import { getBaseUI, updateConfigList } from './tui';
 
 export const runEmulation = (configPath: string) => {
   const screen = blessed.screen({
@@ -13,158 +14,46 @@ export const runEmulation = (configPath: string) => {
 
   screen.title = 'Tibulator';
 
+  let formItems: Array<
+    blessed.Widgets.InputElement | blessed.Widgets.TextElement
+  > = [];
+
+  const {
+    titleBar,
+    errorBox,
+    configList,
+    deviceList,
+    previewBox,
+    actionForm,
+    submitButton,
+    scanButton,
+  } = getBaseUI(screen);
+
   const rawConfig = fs.readFileSync(path.resolve(configPath)).toString();
 
   if (!rawConfig || !rawConfig.length) return;
 
   const parser = new Parser(rawConfig);
 
-  const titleBar = blessed.box({
-    top: '0',
-    left: 'center',
-    right: 'center',
-    align: 'center',
-    width: '100%',
-    height: '20%',
-    tags: true,
-    content: '{center}Tibulator: {red-fg}[disconnected]{/red-fg}{/center}',
-    border: {
-      type: 'line',
-    },
-    style: {
-      fg: 'white',
-      border: {
-        fg: '#f0f0f0',
-      },
-    },
-  });
-
-  const tickBox = blessed.box({
-    top: '20%',
-    height: '25%',
-    align: 'center',
-    width: '50%',
-    tags: true,
-    content: '{center}{bold}Tick Status{/bold}{/center}',
-    border: {
-      type: 'line',
-    },
-    style: {
-      fg: 'white',
-      border: {
-        fg: '#f0f0f0',
-      },
-    },
-  });
-
-  const scanBox = blessed.box({
-    top: '20%',
-    left: '50%',
-    height: '25%',
-    align: 'center',
-    width: '50%',
-    tags: true,
-    content: '{center}{bold}Scan Status{/bold}{/center}',
-    border: {
-      type: 'line',
-    },
-    style: {
-      fg: 'white',
-      border: {
-        fg: '#f0f0f0',
-      },
-    },
-  });
-
-  const errorBox = blessed.box({
-    top: 'center',
-    left: 'center',
-    height: '50%',
-    align: 'center',
-    width: '50%',
-    tags: true,
-    hidden: true,
-    border: {
-      type: 'line',
-    },
-    style: {
-      fg: 'white',
-      bg: 'red',
-      border: {
-        fg: '#f0f0f0',
-      },
-    },
-  });
-
-  const configBox = blessed.box({
-    top: '45%',
-    left: '0',
-    height: '55%',
-    align: 'center',
-    width: '30%',
-    tags: true,
-    border: {
-      type: 'line',
-    },
-    style: {
-      fg: 'white',
-      border: {
-        fg: '#f0f0f0',
-      },
-    },
-  });
-
-  const deviceList = blessed.list({
-    top: '45%',
-    left: '30%',
-    height: '55%',
-    align: 'center',
-    width: '40%',
-    keyable: true,
-    keys: true,
-    shrink: true,
-    tags: true,
-    border: {
-      type: 'line',
-    },
-    style: {
-      fg: 'white',
-      border: {
-        fg: '#f0f0f0',
-      },
-    },
-  });
-
-  const exampleBox = blessed.box({
-    top: '45%',
-    left: '70%',
-    height: '55%',
-    align: 'center',
-    width: '30%',
-    keyable: true,
-    keys: true,
-    shrink: true,
-    tags: true,
-    border: {
-      type: 'line',
-    },
-    style: {
-      fg: 'white',
-      border: {
-        fg: '#f0f0f0',
-      },
-    },
-  });
-
   screen.append(titleBar);
-  screen.append(tickBox);
-  screen.append(scanBox);
-  screen.append(configBox);
+  screen.append(configList);
   screen.append(deviceList);
-  screen.append(exampleBox);
+  screen.append(actionForm);
   screen.append(errorBox);
 
   const devices = parser.generateDevices();
+
+  let selectedDevice = devices.find((dev) => dev.type === 'TIBBO');
+
+  const selectedDeviceTitle = blessed.text({
+    tags: true,
+    top: -2,
+    width: '35%',
+    align: 'center',
+    left: 'center',
+    right: 'center',
+  });
+
   const deviceManager = new DeviceManager(
     devices,
     parser.config.mqtt.options,
@@ -175,72 +64,22 @@ export const runEmulation = (configPath: string) => {
     parser.config.managementTopic,
   );
 
+  scanButton.on('press', () => deviceManager.emitScan());
+
   devices.forEach((device) =>
     deviceList.addItem(`${device.mqttSerial}: ${device.type}`),
   );
 
-  let selectedDevice = devices.find((dev) => dev.type === 'TIBBO');
-
   deviceList.on('select', (_, index) => {
     selectedDevice = devices[index];
-    updateExample(selectedDevice);
+    updateForm(selectedDevice);
+    updatePreview(selectedDevice);
+    screen.render();
   });
-
-  const updateExample = (device: Device | undefined) => {
-    if (!!device) {
-      let mockDevice: { [key: string]: any } = {
-        type: device.type,
-        ipAddress: device.ipAddress,
-      };
-
-      if (device instanceof Tibbo) {
-        mockDevice = {
-          ...mockDevice,
-          firmwareVersion: device.firmwareVersion,
-          firmwareName: device.firmwareName,
-        };
-
-        device.sensors.forEach((sensor) => {
-          mockDevice[sensor.name] = sensor.getValue();
-        });
-
-        device.inputs.forEach((input) => {
-          mockDevice[input.name] = input.getValue();
-        });
-      }
-
-      const object: { [key: string]: any } = {};
-      object[device.serialNumber] = mockDevice;
-
-      const stringContent = JSON.stringify(object, null, 2).replace(
-        /^{/,
-        `${parser.config.mqtt.rootTopic}/${device.topic}/${device.locationID}/${device.serialNumber}`,
-      );
-
-      exampleBox.setContent(stringContent);
-    }
-  };
 
   screen.key(['escape', 'q', 'C-c'], () => {
     return process.exit(0);
   });
-
-  scanBox.on('click', () => {
-    deviceManager.emitScan();
-  });
-
-  updateExample(selectedDevice);
-
-  deviceManager.onTick = () => {
-    tickBox.setLine(1, `{center}Last tick: ${Date.now()} {/center}`);
-    updateExample(selectedDevice);
-    screen.render();
-  };
-
-  deviceManager.onScan = () => {
-    scanBox.setLine(1, `{center}Last scan: ${Date.now()} {/center}`);
-    screen.render();
-  };
 
   deviceManager.onError = (err) => {
     errorBox.hidden = false;
@@ -262,17 +101,187 @@ export const runEmulation = (configPath: string) => {
     screen.render();
   });
 
-  tickBox.setLine(1, 'Waiting...');
-  scanBox.setLine(1, 'Waiting...');
+  submitButton.on('press', () => {
+    actionForm.submit();
+  });
 
-  configBox.setLine(0, `tibboCount: ${parser.config.tibboCount}`);
-  configBox.setLine(1, `cameraCount: ${parser.config.cameraCount || 0}`);
-  configBox.setLine(2, `globalTick: ${parser.config.globalTick || 1000}`);
-  configBox.setLine(3, `scanRate: ${parser.config.scanRate || 5000}`);
-  configBox.setLine(4, `firmwareVersion: ${parser.config.firmwareVersion}`);
-  configBox.setLine(5, `firmwareName: ${parser.config.firmwareName}`);
+  deviceManager.onTick = () => {
+    if (!!selectedDevice) {
+      updatePreview(selectedDevice);
+      screen.render();
+    }
+  };
 
+  actionForm.on('submit', (data: { [key: string]: boolean }) => {
+    if (!!selectedDevice && selectedDevice.type === 'TIBBO') {
+      const tibbo = selectedDevice as Tibbo;
+
+      Object.keys(data).forEach((key) => {
+        const [inputName, currentValue] = key.split('_');
+        const selected = data[key];
+
+        if (selected) {
+          const input = tibbo.inputs.find((input) => input.name === inputName);
+
+          if (!!input)
+            tibbo.emitInput(parser.config.mqtt.rootTopic, input, currentValue);
+        }
+      });
+    }
+  });
+
+  const initialEmit = (selectedDevice: Device) => {
+    if (selectedDevice.type === 'TIBBO') {
+      const tibbo: Tibbo = selectedDevice as Tibbo;
+      tibbo.inputs
+        .filter((input) => !!input.initialValue)
+        .forEach((input) => {
+          tibbo.emitInput(
+            parser.config.mqtt.rootTopic,
+            input,
+            input.initialValue,
+          );
+        });
+    }
+  };
+
+  const updatePreview = (device: Device) => {
+    let mockDevice: { [key: string]: any } = {
+      type: device.type,
+      ipAddress: device.ipAddress,
+    };
+
+    if (device.type === 'TIBBO') {
+      const tibbo: Tibbo = device as Tibbo;
+
+      mockDevice = {
+        ...mockDevice,
+        firmwareVersion: tibbo.firmwareVersion,
+        firmwareName: tibbo.firmwareName,
+      };
+
+      tibbo.sensors.forEach((sensor) => {
+        mockDevice[sensor.name] = sensor.lastValue;
+      });
+
+      tibbo.inputs.forEach((input) => {
+        mockDevice[input.name] = input.lastValue || input.initialValue;
+      });
+    }
+
+    const object: { [key: string]: any } = {};
+    object[device.serialNumber] = mockDevice;
+
+    const stringContent = JSON.stringify(object, null, 2).replace(
+      /^{/,
+      `${parser.config.mqtt.rootTopic}/${device.topic}/${device.locationID}/${device.serialNumber}`,
+    );
+
+    previewBox.setContent(stringContent);
+  };
+
+  const updateForm = (selectedDevice: Device) => {
+    actionForm.children.forEach((child) => actionForm.remove(child));
+    selectedDeviceTitle.setContent(
+      `{center}{bold}${selectedDevice.serialNumber}:{/bold}{/center}`,
+    );
+
+    const getInputName = (inputName: string, inputValueName: string) => {
+      return `${inputName}_${inputValueName}`;
+    };
+
+    actionForm.append(selectedDeviceTitle);
+
+    if (selectedDevice.type === 'TIBBO') {
+      const tibbo: Tibbo = selectedDevice as Tibbo;
+
+      let totalIndex = 0;
+
+      tibbo.inputs.forEach((input) => {
+        const title = blessed.text({
+          content: input.name,
+          shrink: true,
+          top: totalIndex,
+          left: 2,
+        });
+
+        totalIndex++;
+        formItems.push(title);
+        actionForm.append(title);
+
+        const radioGroup = blessed.radioset({
+          top: totalIndex,
+          left: 2,
+        });
+
+        formItems.push(radioGroup);
+        actionForm.append(radioGroup);
+
+        if (input.type === 'ARRAY') {
+          const arrayInput: ArrayInput = input as ArrayInput;
+          arrayInput.values.forEach((value, valueIndex) => {
+            const checkbox = blessed.radiobutton({
+              text: value,
+              name: getInputName(arrayInput.name, value),
+              checked: input.lastValue === value,
+              clickable: true,
+              mouse: true,
+              top: valueIndex,
+              shrink: true,
+              style: {
+                fg: 'blue',
+              },
+            });
+
+            radioGroup.append(checkbox);
+            totalIndex++;
+          });
+        } else if (input.type === 'RANDOM') {
+          const randomInput: RandomInput = input as RandomInput;
+
+          [true, false].forEach((value, valueIndex) => {
+            const mappedValue = randomInput.getMappedValue(value);
+
+            const checkbox = blessed.radiobutton({
+              text: `${mappedValue}`,
+              name: getInputName(randomInput.name, mappedValue),
+              checked: `${randomInput.lastValue}` === `${mappedValue}`,
+              clickable: true,
+              mouse: true,
+              top: valueIndex,
+              shrink: true,
+              style: {
+                fg: 'blue',
+              },
+            });
+
+            radioGroup.append(checkbox);
+            totalIndex++;
+          });
+        }
+
+        totalIndex++;
+      });
+    } else {
+      formItems.forEach((formItem) => {
+        actionForm.remove(formItem);
+      });
+
+      formItems = [];
+    }
+
+    actionForm.append(submitButton);
+  };
+
+  if (!!selectedDevice) {
+    updateForm(selectedDevice);
+    updatePreview(selectedDevice);
+    initialEmit(selectedDevice);
+  }
+
+  updateConfigList(configList, parser.config);
   deviceList.focus();
+
   screen.render();
 
   deviceManager.start();

@@ -7,6 +7,10 @@ Probably the shittiest package known to man
 
 
 ## Changelog
+### 0.1.2
+* Entirely re-works how TUI works
+* Adds `initialValue` to inputs and sensors
+
 ### 0.1.1
 * Adds `locationID` to topic/config
 
@@ -81,10 +85,16 @@ Example of `tibulator.json`
       "values": ["opening", "closing", "open", "closed"]
     },
     {
-      "name": "alarm",
-      "probability": "never",
+      "name": "armed",
+      "probability": 0.5,
       "trueValue": "yes",
-      "falseValue": "no"
+      "falseValue": "no",
+      "initialValue": "yes"
+    },
+    {
+      "name": "alarm",
+      "values": ["DOOR", "MOTION", "HUMIDITY", "TEMPERATURE", "NORMAL"],
+      "initialValue": "NORMAL"
     }
   ],
   "mqtt": {

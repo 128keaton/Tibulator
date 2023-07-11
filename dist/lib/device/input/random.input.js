@@ -6,18 +6,30 @@ class RandomInput {
     probability;
     trueValue;
     falseValue;
+    lastValue;
     type = 'RANDOM';
-    constructor(name, probability = 0.5, trueValue = true, falseValue = false) {
+    initialValue;
+    constructor(name, probability = 0.5, trueValue = 'true', falseValue = 'false', initialValue) {
         this.name = name;
         this.probability = probability;
         this.trueValue = trueValue;
         this.falseValue = falseValue;
+        this.initialValue = initialValue || 'false';
+        this.lastValue = this.initialValue;
     }
     getValue() {
-        if (this.probability === 'never')
-            return this.falseValue;
+        if (this.probability === 'never') {
+            this.lastValue = this.getMappedValue(false);
+            return this.lastValue;
+        }
         const value = (Math.random() < this.probability);
-        return value ? this.trueValue : this.falseValue;
+        this.lastValue = this.getMappedValue(value);
+        return this.lastValue;
+    }
+    getMappedValue(value) {
+        if (value === undefined)
+            return this.falseValue;
+        return value ? `${this.trueValue}` : `${this.falseValue}`;
     }
 }
 exports.RandomInput = RandomInput;

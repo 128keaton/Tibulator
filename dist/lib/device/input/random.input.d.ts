@@ -4,7 +4,10 @@ export declare class RandomInput implements Input {
     private readonly probability;
     private readonly trueValue;
     private readonly falseValue;
+    lastValue?: string;
     readonly type: InputType;
-    constructor(name: string, probability?: number | 'never', trueValue?: boolean, falseValue?: boolean);
-    getValue(): any;
+    readonly initialValue?: string;
+    constructor(name: string, probability?: number | 'never', trueValue?: string, falseValue?: string, initialValue?: string);
+    getValue(): string;
+    getMappedValue(value?: boolean): string;
 }

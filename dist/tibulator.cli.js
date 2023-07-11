@@ -12,7 +12,6 @@ const runCLI = () => {
         .createCommand('emulate')
         .requiredOption('-c <configPath>, --config=<configPath>', 'Path to tibulator-json', './tibulator.json')
         .action((options) => {
-        console.log(options);
         (0, emulate_1.runEmulation)(options.c || options.config || './tibulator.json');
     });
     commander_1.program.addCommand(emulateCommand);

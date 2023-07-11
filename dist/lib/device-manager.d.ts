@@ -20,6 +20,7 @@ export declare class DeviceManager {
     constructor(devices: Device[], mqttConfig: IClientOptions, mqttURL: string, rootTopic: string, globalTick?: number, scanRate?: number, managementTopic?: string, locationID?: number);
     start(): void;
     emitScan(): void;
+    emitInput(inputName: string, value?: string): void;
     private tick;
     private disconnectAll;
     private shouldEmit;
