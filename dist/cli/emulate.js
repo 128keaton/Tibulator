@@ -85,6 +85,12 @@ const runEmulation = (configPath) => {
         screen.render();
     });
     deviceManager.onTick = () => {
+        devices
+            .filter((device) => device !== selectedDevice && device.type === 'TIBBO')
+            .forEach((device) => {
+            const tibbo = device;
+            tibbo.inputs.forEach((input) => tibbo.emitInput(parser.config.mqtt.rootTopic, input, input.lastValue));
+        });
         if (!!selectedDevice) {
             actionForm.submit();
         }

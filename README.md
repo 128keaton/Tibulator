@@ -8,6 +8,9 @@ Probably the shittiest package known to man
 
 ## Changelog
 
+### 0.1.5
+* Ensures inputs not being modified are still emitting
+
 ### 0.1.4
 * Removes submit button
 * Fixes live data

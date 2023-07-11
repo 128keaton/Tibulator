@@ -104,6 +104,15 @@ export const runEmulation = (configPath: string) => {
   });
 
   deviceManager.onTick = () => {
+    devices
+      .filter((device) => device !== selectedDevice && device.type === 'TIBBO')
+      .forEach((device) => {
+        const tibbo: Tibbo = device as Tibbo;
+
+        tibbo.inputs.forEach((input) =>
+          tibbo.emitInput(parser.config.mqtt.rootTopic, input, input.lastValue),
+        );
+      });
     if (!!selectedDevice) {
       actionForm.submit();
     }
