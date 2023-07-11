@@ -7,6 +7,14 @@ Probably the shittiest package known to man
 
 
 ## Changelog
+
+### 0.1.4
+* Removes submit button
+* Fixes live data
+
+### 0.1.3
+* Bugfixes
+
 ### 0.1.2
 * Entirely re-works how TUI works
 * Adds `initialValue` to inputs and sensors

@@ -8,6 +8,6 @@ export declare class RandomInput implements Input {
     readonly type: InputType;
     readonly initialValue?: string;
     constructor(name: string, probability?: number | 'never', trueValue?: string, falseValue?: string, initialValue?: string);
-    getValue(): string;
+    getValue(override?: string): string;
     getMappedValue(value?: boolean): string;
 }

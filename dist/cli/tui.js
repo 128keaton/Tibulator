@@ -158,29 +158,6 @@ const getBaseUI = (parent) => {
             },
         },
     });
-    const submitButton = blessed.button({
-        mouse: true,
-        keyable: true,
-        clickable: true,
-        padding: {
-            left: 1,
-            right: 1,
-        },
-        shrink: true,
-        left: 1,
-        bottom: 2,
-        name: 'submit',
-        content: 'submit',
-        style: {
-            bg: 'red',
-            focus: {
-                bg: 'blue',
-            },
-            hover: {
-                bg: 'blue',
-            },
-        },
-    });
     const scanButton = blessed.button({
         mouse: true,
         keyable: true,
@@ -239,7 +216,6 @@ const getBaseUI = (parent) => {
         deviceList,
         previewBox,
         actionForm,
-        submitButton,
         scanButton,
     };
 };

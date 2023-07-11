@@ -33,7 +33,7 @@ class Tibbo {
     }
     emitInput(rootTopic, input, value) {
         const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/${input.name}`;
-        this.mqttClient.publish(topic, `${value || input.getValue()}`);
+        this.mqttClient.publish(topic, `${input.getValue(value)}`);
     }
     emitSensor(rootTopic, sensor) {
         const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/${sensor.name}`;

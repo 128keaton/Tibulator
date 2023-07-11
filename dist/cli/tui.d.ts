@@ -7,7 +7,6 @@ export declare const getBaseUI: (parent: blessed.Widgets.Screen) => {
     deviceList: blessed.Widgets.ListElement;
     previewBox: blessed.Widgets.BoxElement;
     actionForm: blessed.Widgets.FormElement<unknown>;
-    submitButton: blessed.Widgets.ButtonElement;
     scanButton: blessed.Widgets.ButtonElement;
 };
 export declare const updateConfigList: (configList: blessed.Widgets.ListElement, config: Config) => void;

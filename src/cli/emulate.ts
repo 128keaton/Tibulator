@@ -25,7 +25,6 @@ export const runEmulation = (configPath: string) => {
     deviceList,
     previewBox,
     actionForm,
-    submitButton,
     scanButton,
   } = getBaseUI(screen);
 
@@ -64,7 +63,10 @@ export const runEmulation = (configPath: string) => {
     parser.config.managementTopic,
   );
 
-  scanButton.on('press', () => deviceManager.emitScan());
+  scanButton.on('press', () => {
+    scanButton.setContent(`Last scan: ${Date.now()}`);
+    deviceManager.emitScan();
+  });
 
   devices.forEach((device) =>
     deviceList.addItem(`${device.mqttSerial}: ${device.type}`),
@@ -101,14 +103,9 @@ export const runEmulation = (configPath: string) => {
     screen.render();
   });
 
-  submitButton.on('press', () => {
-    actionForm.submit();
-  });
-
   deviceManager.onTick = () => {
     if (!!selectedDevice) {
-      updatePreview(selectedDevice);
-      screen.render();
+      actionForm.submit();
     }
   };
 
@@ -127,6 +124,9 @@ export const runEmulation = (configPath: string) => {
             tibbo.emitInput(parser.config.mqtt.rootTopic, input, currentValue);
         }
       });
+
+      updatePreview(selectedDevice);
+      screen.render();
     }
   });
 
@@ -269,8 +269,6 @@ export const runEmulation = (configPath: string) => {
 
       formItems = [];
     }
-
-    actionForm.append(submitButton);
   };
 
   if (!!selectedDevice) {

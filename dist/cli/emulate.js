@@ -36,7 +36,7 @@ const runEmulation = (configPath) => {
     });
     screen.title = 'Tibulator';
     let formItems = [];
-    const { titleBar, errorBox, configList, deviceList, previewBox, actionForm, submitButton, scanButton, } = (0, tui_1.getBaseUI)(screen);
+    const { titleBar, errorBox, configList, deviceList, previewBox, actionForm, scanButton, } = (0, tui_1.getBaseUI)(screen);
     const rawConfig = fs.readFileSync(path.resolve(configPath)).toString();
     if (!rawConfig || !rawConfig.length)
         return;
@@ -57,7 +57,10 @@ const runEmulation = (configPath) => {
         right: 'center',
     });
     const deviceManager = new device_manager_1.DeviceManager(devices, parser.config.mqtt.options, parser.config.mqtt.options.url, parser.config.mqtt.rootTopic, parser.config.globalTick, parser.config.scanRate, parser.config.managementTopic);
-    scanButton.on('press', () => deviceManager.emitScan());
+    scanButton.on('press', () => {
+        scanButton.setContent(`Last scan: ${Date.now()}`);
+        deviceManager.emitScan();
+    });
     devices.forEach((device) => deviceList.addItem(`${device.mqttSerial}: ${device.type}`));
     deviceList.on('select', (_, index) => {
         selectedDevice = devices[index];
@@ -81,13 +84,9 @@ const runEmulation = (configPath) => {
         errorBox.hidden = true;
         screen.render();
     });
-    submitButton.on('press', () => {
-        actionForm.submit();
-    });
     deviceManager.onTick = () => {
         if (!!selectedDevice) {
-            updatePreview(selectedDevice);
-            screen.render();
+            actionForm.submit();
         }
     };
     actionForm.on('submit', (data) => {
@@ -102,6 +101,8 @@ const runEmulation = (configPath) => {
                         tibbo.emitInput(parser.config.mqtt.rootTopic, input, currentValue);
                 }
             });
+            updatePreview(selectedDevice);
+            screen.render();
         }
     });
     const initialEmit = (selectedDevice) => {
@@ -212,7 +213,6 @@ const runEmulation = (configPath) => {
             });
             formItems = [];
         }
-        actionForm.append(submitButton);
     };
     if (!!selectedDevice) {
         updateForm(selectedDevice);

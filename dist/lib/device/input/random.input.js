@@ -17,13 +17,18 @@ class RandomInput {
         this.initialValue = initialValue || 'false';
         this.lastValue = this.initialValue;
     }
-    getValue() {
-        if (this.probability === 'never') {
-            this.lastValue = this.getMappedValue(false);
-            return this.lastValue;
+    getValue(override) {
+        if (override) {
+            this.lastValue = override;
         }
-        const value = (Math.random() < this.probability);
-        this.lastValue = this.getMappedValue(value);
+        else {
+            if (this.probability === 'never') {
+                this.lastValue = this.getMappedValue(false);
+                return this.lastValue;
+            }
+            const value = (Math.random() < this.probability);
+            this.lastValue = this.getMappedValue(value);
+        }
         return this.lastValue;
     }
     getMappedValue(value) {

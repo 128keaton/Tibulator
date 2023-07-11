@@ -15,9 +15,15 @@ export class ArrayInput implements Input {
     this.lastValue = this.initialValue;
   }
 
-  getValue(): string {
-    this.lastValue =
-      this.values[Math.floor(Math.random() * this.values.length)];
+  getValue(override?: string): string {
+    if (override) {
+      this.lastValue = override;
+    } else {
+      this.lastValue =
+        this.values[Math.floor(Math.random() * this.values.length)];
+    }
+
+
     return `${this.lastValue}`;
   }
 }

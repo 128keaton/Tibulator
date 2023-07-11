@@ -6,5 +6,5 @@ export declare class ArrayInput implements Input {
     readonly initialValue?: string;
     readonly type: InputType;
     constructor(name: string, values: any[], initialValue?: string);
-    getValue(): string;
+    getValue(override?: string): string;
 }

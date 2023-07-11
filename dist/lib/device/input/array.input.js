@@ -13,9 +13,14 @@ class ArrayInput {
         this.initialValue = initialValue;
         this.lastValue = this.initialValue;
     }
-    getValue() {
-        this.lastValue =
-            this.values[Math.floor(Math.random() * this.values.length)];
+    getValue(override) {
+        if (override) {
+            this.lastValue = override;
+        }
+        else {
+            this.lastValue =
+                this.values[Math.floor(Math.random() * this.values.length)];
+        }
         return `${this.lastValue}`;
     }
 }

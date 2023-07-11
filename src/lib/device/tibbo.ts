@@ -34,7 +34,7 @@ export class Tibbo implements Device {
 
   public emitInput(rootTopic: string, input: Input, value?: string) {
     const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/${input.name}`;
-    this.mqttClient.publish(topic, `${value || input.getValue()}`);
+    this.mqttClient.publish(topic, `${input.getValue(value)}`);
   }
 
   public emitSensor(rootTopic: string, sensor: Sensor) {

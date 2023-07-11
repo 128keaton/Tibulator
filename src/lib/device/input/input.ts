@@ -4,5 +4,5 @@ export interface Input {
   readonly type: InputType;
   readonly initialValue?: string,
   lastValue?: string;
-  getValue(): string;
+  getValue(override?: string): string;
 }

@@ -17,15 +17,19 @@ export class RandomInput implements Input {
     this.lastValue = this.initialValue;
   }
 
-  getValue(): string {
-    if (this.probability === 'never') {
-      this.lastValue = this.getMappedValue(false);
-      return this.lastValue;
+  getValue(override?: string): string {
+    if (override) {
+      this.lastValue = override;
+    } else {
+      if (this.probability === 'never') {
+        this.lastValue = this.getMappedValue(false);
+        return this.lastValue;
+      }
+
+      const value = (Math.random() < this.probability) as boolean;
+
+      this.lastValue = this.getMappedValue(value);
     }
-
-    const value = (Math.random() < this.probability) as boolean;
-
-    this.lastValue = this.getMappedValue(value);
 
     return this.lastValue;
   }
