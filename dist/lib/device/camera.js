@@ -18,10 +18,13 @@ class Camera {
     get mqttSerial() {
         return this.serialNumber;
     }
+    get deviceProperties() {
+        const properties = [this.type, this.ipAddress];
+        return properties.join(',');
+    }
     emitDevice(rootTopic) {
-        const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/`;
-        this.mqttClient.publish(topic + 'type', this.type);
-        this.mqttClient.publish(topic + 'ipAddress', this.ipAddress);
+        const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/_info`;
+        this.mqttClient.publish(topic, this.deviceProperties);
     }
     disconnect() {
         this.mqttClient.end(true);

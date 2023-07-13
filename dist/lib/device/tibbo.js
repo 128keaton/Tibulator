@@ -24,12 +24,18 @@ class Tibbo {
     get mqttSerial() {
         return this.serialNumber.split('.').join(':');
     }
+    get deviceProperties() {
+        const properties = [
+            this.type,
+            this.ipAddress,
+            this.firmwareVersion,
+            this.firmwareName,
+        ];
+        return properties.join(',');
+    }
     emitDevice(rootTopic) {
-        const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/`;
-        this.mqttClient.publish(topic + 'type', this.type);
-        this.mqttClient.publish(topic + 'ipAddress', this.ipAddress);
-        this.mqttClient.publish(topic + 'firmwareVersion', this.firmwareVersion);
-        this.mqttClient.publish(topic + 'firmwareName', this.firmwareName);
+        const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/_info`;
+        this.mqttClient.publish(topic, this.deviceProperties);
     }
     emitInput(rootTopic, input, value) {
         const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/${input.name}`;

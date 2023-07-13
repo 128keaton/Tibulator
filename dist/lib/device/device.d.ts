@@ -7,4 +7,5 @@ export interface Device {
     get mqttSerial(): string;
     emitDevice(rootTopic: string): any;
     disconnect(): void;
+    get deviceProperties(): string;
 }

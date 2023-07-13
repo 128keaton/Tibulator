@@ -129,9 +129,7 @@ const runEmulation = (configPath) => {
         if (device.type === 'TIBBO') {
             const tibbo = device;
             mockDevice = {
-                ...mockDevice,
-                firmwareVersion: tibbo.firmwareVersion,
-                firmwareName: tibbo.firmwareName,
+                _info: device.deviceProperties,
             };
             tibbo.sensors.forEach((sensor) => {
                 mockDevice[sensor.name] = sensor.lastValue;

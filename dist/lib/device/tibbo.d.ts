@@ -15,6 +15,7 @@ export declare class Tibbo implements Device {
     readonly type = "TIBBO";
     constructor(serialNumber: string, ipAddress: string, firmwareVersion: string, firmwareName: string, topic: string, locationID: number, mqttClient: Client);
     get mqttSerial(): string;
+    get deviceProperties(): string;
     emitDevice(rootTopic: string): void;
     emitInput(rootTopic: string, input: Input, value?: string): void;
     emitSensor(rootTopic: string, sensor: Sensor): void;

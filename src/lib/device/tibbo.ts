@@ -23,13 +23,21 @@ export class Tibbo implements Device {
     return this.serialNumber.split('.').join(':');
   }
 
-  public emitDevice(rootTopic: string) {
-    const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/`;
+  get deviceProperties(): string {
+    const properties = [
+      this.type,
+      this.ipAddress,
+      this.firmwareVersion,
+      this.firmwareName,
+    ];
 
-    this.mqttClient.publish(topic + 'type', this.type);
-    this.mqttClient.publish(topic + 'ipAddress', this.ipAddress);
-    this.mqttClient.publish(topic + 'firmwareVersion', this.firmwareVersion);
-    this.mqttClient.publish(topic + 'firmwareName', this.firmwareName);
+    return properties.join(',');
+  }
+
+  public emitDevice(rootTopic: string) {
+    const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/_info`;
+
+    this.mqttClient.publish(topic, this.deviceProperties);
   }
 
   public emitInput(rootTopic: string, input: Input, value?: string) {

@@ -164,9 +164,7 @@ export const runEmulation = (configPath: string) => {
       const tibbo: Tibbo = device as Tibbo;
 
       mockDevice = {
-        ...mockDevice,
-        firmwareVersion: tibbo.firmwareVersion,
-        firmwareName: tibbo.firmwareName,
+        _info: device.deviceProperties,
       };
 
       tibbo.sensors.forEach((sensor) => {

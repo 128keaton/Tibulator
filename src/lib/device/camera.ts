@@ -15,12 +15,16 @@ export class Camera implements Device {
   get mqttSerial(): string {
     return this.serialNumber;
   }
+  get deviceProperties(): string {
+    const properties = [this.type, this.ipAddress];
+
+    return properties.join(',');
+  }
 
   public emitDevice(rootTopic: string) {
-    const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/`;
+    const topic = `${rootTopic}/${this.topic}/${this.locationID}/${this.mqttSerial}/_info`;
 
-    this.mqttClient.publish(topic + 'type', this.type);
-    this.mqttClient.publish(topic + 'ipAddress', this.ipAddress);
+    this.mqttClient.publish(topic, this.deviceProperties);
   }
 
   disconnect() {

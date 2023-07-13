@@ -7,6 +7,8 @@ Probably the shittiest package known to man
 
 
 ## Changelog
+### 0.1.6
+* Changes device properties emission to single topic, comma-separated
 
 ### 0.1.5
 * Ensures inputs not being modified are still emitting
